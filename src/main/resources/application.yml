@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: mall-data-split
+  profiles:
+    active: dev #默认为开发环境
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  
+

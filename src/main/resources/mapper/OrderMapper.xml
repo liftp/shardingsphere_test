@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hch.sharding.data_split.mapper.OrderMapper">
+    <!-- <insert id="insertList">
+        insert into cms_prefrence_area_product_relation (prefrence_area_id, product_id) values
+        <foreach collection="list" item="item" separator="," index="index">
+            (#{item.prefrenceAreaId,jdbcType=BIGINT},
+            #{item.productId,jdbcType=BIGINT})
+        </foreach>
+    </insert> -->
+    <select id="findOrderInIds" resultType="com.hch.sharding.data_split.dto.Order">
+        select o.id, o.create_time, o.goods_name, o.goods_num, o.order_amt, o.buyer 
+        from t_order o
+        <where>
+            o.id in (
+                <foreach collection="list" item="item" separator=",">
+                    #{item}
+                </foreach>
+            )
+            and buyer = #{buyer}
+        </where>
+    </select>
+</mapper>

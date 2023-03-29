@@ -1,0 +1,53 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0,ds1
+      ds0: 
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds0?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+        username: root
+        password: 123456
+      ds1: 
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds1?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+        username: root
+        password: 123456
+    rules:
+      sharding:
+        defaultDatabaseStrategy:
+          standard:
+            shardingColumn: buyer
+            shardingAlgorithmName: database_inline
+        bindingTables: 
+          - t_order     # 可以用逗号分隔，进行多个表分片
+        tables:
+          t_order:
+            actualDataNodes: ds${0..1}.t_order${0..1}
+            tableStrategy:
+              standard: 
+                shardingColumn: id
+                shardingAlgorithmName: sharding_order_by_java # sharding_order_by_id
+        sharding-algorithms:
+          # sharding_order_by_id:
+          #   type: INLINE    # INLINE: 使用表达式 CLASS_BASED: 使用类名
+          #   props: 
+          #     algorithm-expression: t_order${id % 2}
+          sharding_order_by_java:
+            type: CLASS_BASED       # 基于全路径类实现算法
+            props:
+              strategy: STANDARD
+              algorithmClassName: com.hch.sharding.data_split.config.v5.MyShardingAlg
+          database_inline:
+            type: INLINE
+            props:
+              algorithm-expression: ds${buyer % 2}
+              # algorithmClassName: com.hch.sharding.data_split.config.v5.DBShardingAlg
+        keyGenerators:
+          snowflake:
+            type: SNOWFLAKE       # 雪花算法生成id
+    props:
+      sql-show: true  # shardingsphere sql打印
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

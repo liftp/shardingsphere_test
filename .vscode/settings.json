@@ -1,0 +1,12 @@
+{
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "F:\\install\\jdk8\\bin"
+        }
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "workbench.editor.enablePreview": false
+}
